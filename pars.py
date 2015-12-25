@@ -7,6 +7,7 @@ import os
 import urlparse
 import requests
 
+   
 def name_of_url(url):
     adress = ''
     invalidSymbols = ['/', '\\', '|', '*', ':', '"', '?', '<', '>' ]
@@ -33,33 +34,33 @@ def name_of_files(url):
     return name
 
 def rename(old_name, new_name, first, second, path):
-    new_name = path + new_name
-    file = open(first)
-    file1 = open(second, 'w')
-    line = file.readline()
-    i = 0
-    k = 0
-    while line != '':
-        if old_name in line:
-            line1 = ''
-            while k < len(line):
-                if line[k: k + len(old_name)] == old_name:
-                    line1 += new_name
-                    k += len(old_name)
+    os.path.join(path, new_name)
+    with open(first) as file:
+        with open(second, 'w') as file_rec:   
+            line = file.readline()
+            k = 0
+            while line != '':
+                if old_name in line:
+                    line1 = ''
+                    while k < len(line):
+                        if line[k: k + len(old_name)] == old_name:
+                            line1 += new_name
+                            k += len(old_name)
+                        else:
+                            line1 += line[k]
+                            k += 1
+                    file_rec.write(line1)
                 else:
-                    line1 += line[k]
-                    k += 1
-            file1.write(line1)
-        else:
-            file1.write(line)
-        line = file.readline()
-    file1.close()
-    file.close()
+                    file_rec.write(line)
+                line = file.readline()
+            file_rec.close()
+            file.close()
 
 def download_files(url, name, path):
-    path_f = path + name
-    if not ('https:' in url or 'http:' in url):
-        url = 'http:' + url
+    flaq = path_f = path + name
+    if (flaq == True):
+        url.starwin('https', 'http')
+    url = 'http:' + url    
     urllib.urlretrieve(url, path_f)
 
 def all_urls(url, arr, string, host_name, path, page_name, already_check, folder):
@@ -112,25 +113,28 @@ def all_urls(url, arr, string, host_name, path, page_name, already_check, folder
               arr.append(str(new_url))
               print ('!!!', arr)
     return arr
+    
+def main():
+    os.chdir("C:/Python27/parsing")
+    url = 'https://hsp.kz/category/avtorskie-stati/'
+    word = 'android'
+    urls = []
+    urls.append(url)
+    host_name  = urlparse.urlparse(url).hostname
+    already_check = []
+    
+    while len(urls) != 0:
+        print (urls)
+        url = urls.pop(0)
+        print (urls, '+')
+        print (already_check)
+        already_check.append(url)
+        url_name = name_of_url(url)
+        print (url_name, url)
+        folder = 'files_' + url_name
+        path = './' + folder + '/'
+        urls = all_urls(url, urls, word, host_name, path, url_name, already_check, folder)
 
 
-os.chdir("C:/Python27/parsing")
-url = 'https://hsp.kz/category/avtorskie-stati/'
-word = 'android'
-urls = []
-urls.append(url)
-host_name  = urlparse.urlparse(url).hostname
-already_check = []
-
-while len(urls) != 0:
-    print (urls)
-    url = urls.pop(0)
-    print (urls, '+')
-    print (already_check)
-    already_check.append(url)
-    url_name = name_of_url(url)
-    print (url_name, url)
-    folder = 'files_' + url_name
-    path = './' + folder + '/'
-    urls = all_urls(url, urls, word, host_name, path, url_name, already_check, folder)
-
+if __name__ == "__main__":
+    main()    
